@@ -1,7 +1,9 @@
 package com.tourconnect.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,9 +14,12 @@ public class Tour {
     @Id
     private String id;
 
+    @NotNull
+    @Indexed(unique = true)
     @Field("tour_id")
     private Integer tourId;
 
+    @NotBlank
     private String title;
 
     private String description;

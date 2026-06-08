@@ -2,8 +2,8 @@ package com.tourconnect.controller;
 
 import com.tourconnect.model.Tour;
 import com.tourconnect.repository.TourRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +21,23 @@ public class TourController {
         return tourRepository.findAll();
     }
 
-    @GetMapping("/repo")
-    public String repoType() {
-        return tourRepository.getClass().getName();
+    @GetMapping("/tours/{id}")
+    public Tour getTour(@PathVariable String id) {
+        return tourRepository.findById(id).orElseThrow();
+    }
+
+    @PostMapping("/tours")
+    public Tour createTour(@Valid @RequestBody Tour tour) {
+        return tourRepository.save(tour);
+    }
+
+    @DeleteMapping("/tours/{id}")
+    public void deleteTour(@PathVariable String id) {
+        tourRepository.deleteById(id);
+    }
+
+    @GetMapping("/tours/search")
+    public List<Tour> searchTours(@RequestParam String title) {
+        return tourRepository.findByTitle(title);
     }
 }
