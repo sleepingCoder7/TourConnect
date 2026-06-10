@@ -15,7 +15,10 @@ public class Tour {
     private String id;
 
     @NotNull
-    @Indexed(unique = true)
+    @Indexed(
+            name = "tour_id_1",
+            unique = true
+    )
     @Field("tour_id")
     private Integer tourId;
 
