@@ -41,11 +41,11 @@ public class TourController {
     }
 
     @DeleteMapping("/{tourId}")
-    public void deleteTour(@PathVariable Integer tourId) {
+    public String deleteTour(@PathVariable Integer tourId) {
 
         tourService.deleteTour(tourId);
 
-        return "Tour deleted successfully"
+        return "Tour deleted successfully";
     }
 
 }

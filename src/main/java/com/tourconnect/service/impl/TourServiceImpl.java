@@ -1,5 +1,7 @@
 package com.tourconnect.service.impl;
 
+import com.tourconnect.exception.DuplicateTourException;
+import com.tourconnect.exception.TourNotFoundException;
 import com.tourconnect.model.Tour;
 import com.tourconnect.repository.TourRepository;
 import com.tourconnect.service.TourService;
@@ -10,7 +12,7 @@ import java.util.List;
 @Service
 public class TourServiceImpl implements TourService {
 
-    private TourRepository tourRepository;
+    private final TourRepository tourRepository;
 
     public TourServiceImpl(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
@@ -23,20 +25,20 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public Tour getTourById(Integer tourId) {
-        return tourRepository.findByTourId(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        return tourRepository.findByTourId(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
     }
 
     @Override
     public void createTour(Tour tour) {
         if(tourRepository.existsByTourId(tour.getTourId())) {
-            throw new RuntimeException("Tour with this ID already exists");
+            throw new DuplicateTourException(tour.getTourId());
         }
         tourRepository.save(tour);
     }
 
     @Override
     public void updateTour(Integer tourId, Tour tour) {
-        Tour existingTour = tourRepository.findByTourId(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        Tour existingTour = tourRepository.findByTourId(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
 
         existingTour.setTitle(tour.getTitle());
         existingTour.setDescription(tour.getDescription());
@@ -51,7 +53,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public void deleteTour(Integer tourId) {
-        Tour existingTour = tourRepository.findByTourId(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        Tour existingTour = tourRepository.findByTourId(tourId).orElseThrow(() -> new TourNotFoundException(tourId));
 
         tourRepository.delete(existingTour);
     }
