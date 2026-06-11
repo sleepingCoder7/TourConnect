@@ -2,42 +2,50 @@ package com.tourconnect.controller;
 
 import com.tourconnect.model.Tour;
 import com.tourconnect.repository.TourRepository;
+import com.tourconnect.service.TourService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("api/v1/tours")
 public class TourController {
 
-    private final TourRepository tourRepository;
+    private final TourService tourService;
 
-    public TourController(TourRepository tourRepository) {
-        this.tourRepository = tourRepository;
+    public TourController(TourService tourService) {
+        this.tourService = tourService;
     }
 
-    @GetMapping("/tours")
+    @GetMapping
     public List<Tour> getAllTours() {
-        return tourRepository.findAll();
+        return tourService.getAllTours();
     }
 
-    @GetMapping("/tours/{id}")
-    public Tour getTour(@PathVariable String id) {
-        return tourRepository.findById(id).orElseThrow();
+    @GetMapping("/{tourId}")
+    public Tour getTourById(@PathVariable Integer tourId) {
+        return tourService.getTourById(tourId);
     }
 
-    @PostMapping("/tours")
-    public Tour createTour(@Valid @RequestBody Tour tour) {
-        return tourRepository.save(tour);
+    @PostMapping
+    public String createTour(@RequestBody Tour tour) {
+        tourService.createTour(tour);
+        return "Tour created successfully";
     }
 
-    @DeleteMapping("/tours/{id}")
-    public void deleteTour(@PathVariable String id) {
-        tourRepository.deleteById(id);
+    @PutMapping
+    public String updateTour(@PathVariable Integer tourId, @RequestBody Tour tour) {
+        tourService.updateTour(tourId, tour);
+        return "Tour updated successfully";
     }
 
-    @GetMapping("/tours/search")
-    public List<Tour> searchTours(@RequestParam String title) {
-        return tourRepository.findByTitle(title);
+    @DeleteMapping("/{tourId}")
+    public void deleteTour(@PathVariable Integer tourId) {
+
+        tourService.deleteTour(tourId);
+
+        return "Tour deleted successfully"
     }
+
 }
